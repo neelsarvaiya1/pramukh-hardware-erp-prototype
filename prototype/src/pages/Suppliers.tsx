@@ -3,14 +3,18 @@ import { useApp } from '../context/AppContext';
 import { Button, Input, Select, Badge, Modal, Card, SearchInput, Icon, showToast } from '../components/ui';
 import { formatCurrency, formatDate, hasPermission } from '../utils/permissions';
 import { cn } from '../utils/cn';
+import StatementDocument from '../components/documents/StatementDocument';
+import { generateDemoStatement } from '../utils/statementData';
 
 export default function Suppliers() {
-  const { suppliers, purchases, products, settings, currentUser, addSupplier, updateSupplier } = useApp();
+  const { suppliers, purchases, products, settings, currentUser, addSupplier, updateSupplier, deleteSupplier } = useApp();
 
   const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [viewId, setViewId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showStatement, setShowStatement] = useState<{ entity: any, data: any } | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -300,6 +304,15 @@ export default function Suppliers() {
         size="lg"
         footer={
           <>
+            <Button variant="ghost" onClick={() => {
+              if (detail) {
+                const statementData = generateDemoStatement(detail.totalSpent || 80000, false);
+                setShowStatement({ entity: detail, data: statementData });
+              }
+            }}>
+              <Icon name="printer" size={16} className="mr-1" />
+              Print Statement
+            </Button>
             <Button variant="ghost" onClick={() => setViewId(null)}>
               Close
             </Button>
@@ -397,6 +410,36 @@ export default function Suppliers() {
           </div>
         )}
       </Modal>
+
+      {/* Delete Confirm */}
+      <ConfirmDialog
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={() => {
+          if (confirmDelete) {
+            deleteSupplier(confirmDelete);
+            showToast('success', 'Supplier record deleted');
+          }
+        }}
+        title="Delete Supplier"
+        message="Are you sure? This vendor will be deleted from your directory."
+        confirmText="Delete"
+        variant="danger"
+      />
+
+      {showStatement && (
+        <StatementDocument
+          type="supplier"
+          entityName={showStatement.entity.name}
+          entityAddress={showStatement.entity.address || showStatement.entity.city || 'Eldoret, Kenya'}
+          entityPin={showStatement.entity.taxPin || 'P051998822A'}
+          transactions={showStatement.data.transactions}
+          startDate={showStatement.data.startDate}
+          endDate={showStatement.data.endDate}
+          currentBalance={showStatement.data.currentBalance}
+          onClose={() => setShowStatement(null)}
+        />
+      )}
     </div>
   );
 }

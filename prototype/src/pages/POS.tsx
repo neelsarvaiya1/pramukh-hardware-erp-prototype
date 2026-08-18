@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { Button, Input, Modal, Icon, Badge, showToast, EmptyState } from '../components/ui';
-import { formatCurrency, formatDate } from '../utils/permissions';
+import { hasPermission, formatCurrency, formatDate } from '../utils/permissions';
+import ReceiptDocument from '../components/documents/ReceiptDocument';
 import type { Sale } from '../types';
 import { cn } from '../utils/cn';
 
@@ -424,79 +425,8 @@ export default function POS() {
         </div>
       </Modal>
 
-      {/* Receipt Modal (Matches the minimalist document style) */}
       {showReceipt && (
-        <Modal open={true} onClose={() => setShowReceipt(null)} title="Receipt" size="sm" footer={
-          <div className="flex gap-2 w-full">
-            <Button variant="outline" className="flex-1" onClick={() => setShowReceipt(null)}>Close</Button>
-            <Button variant="primary" className="flex-1" icon="print" onClick={() => window.print()}>Print Receipt</Button>
-          </div>
-        }>
-          <div className="receipt p-2">
-            <div className="rc-head">
-              <h3>{settings.storeName}</h3>
-              <div className="mt-1">{settings.address}</div>
-              <div>Tel: {settings.phone}</div>
-              {settings.gstNumber && <div>GSTIN: {settings.gstNumber}</div>}
-              <div className="mt-3 font-semibold uppercase text-xs tracking-widest">Tax Invoice</div>
-            </div>
-            
-            <div className="text-[12px] py-3 flex justify-between">
-              <div>
-                <div>Invoice: <strong>{showReceipt.invoiceNumber}</strong></div>
-                <div>Date: {formatDate(showReceipt.date)}</div>
-              </div>
-              <div className="text-right">
-                <div>Cashier: Admin</div>
-                <div>Pay: <span className="capitalize">{showReceipt.paymentMethod}</span></div>
-              </div>
-            </div>
-            
-            <div className="rc-items">
-              <div className="rc-line text-[11px] font-bold text-muted uppercase tracking-wider border-b border-dashed border-[#cbd5e1] pb-1 mb-1">
-                <span>Item</span>
-                <span>Amount</span>
-              </div>
-              {showReceipt.items.map(item => (
-                <div key={item.id} className="rc-item">
-                  <div className="flex justify-between">
-                    <span className="font-semibold">{item.name}</span>
-                    <span className="font-semibold tabular-nums">{formatCurrency(item.price * item.quantity, sym)}</span>
-                  </div>
-                  <div className="text-muted text-[11.5px] mt-0.5">
-                    {item.quantity} &times; {formatCurrency(item.price, sym)}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="rc-totals">
-              <div className="rc-line text-muted">
-                <span>Subtotal</span>
-                <span>{formatCurrency(showReceipt.subtotal, sym)}</span>
-              </div>
-              {showReceipt.discount > 0 && (
-                <div className="rc-line text-muted">
-                  <span>Discount</span>
-                  <span>-{formatCurrency(showReceipt.discount, sym)}</span>
-                </div>
-              )}
-              <div className="rc-line text-muted pb-2 border-b border-dashed border-[#cbd5e1] mb-2">
-                <span>Tax ({settings.taxRate}%)</span>
-                <span>{formatCurrency(showReceipt.tax, sym)}</span>
-              </div>
-              <div className="rc-line font-extrabold text-[15px]">
-                <span>Total</span>
-                <span>{formatCurrency(showReceipt.total, sym)}</span>
-              </div>
-            </div>
-            
-            <div className="rc-foot">
-              <p>Thank you for your business!</p>
-              <p className="mt-1 text-[10.5px]">Please retain your receipt for returns.</p>
-            </div>
-          </div>
-        </Modal>
+        <ReceiptDocument sale={showReceipt} onClose={() => setShowReceipt(null)} />
       )}
     </>
   );

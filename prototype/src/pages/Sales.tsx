@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Badge, Modal, Card, StatCard, SearchInput, Button, Icon, showToast } from '../components/ui';
 import { formatCurrency, formatDate } from '../utils/permissions';
 import { cn } from '../utils/cn';
+import ReceiptDocument from '../components/documents/ReceiptDocument';
 
 export default function Sales() {
   const { sales, settings } = useApp();
@@ -11,6 +12,7 @@ export default function Sales() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
   const [viewSale, setViewSale] = useState<string | null>(null);
+  const [printSale, setPrintSale] = useState<any | null>(null);
 
   const todayStr = new Date().toISOString().split('T')[0];
   const completedSales = useMemo(() => sales.filter(s => s.status === 'completed'), [sales]);
@@ -234,7 +236,10 @@ export default function Sales() {
             <Button
               variant="outline"
               icon="print"
-              onClick={() => showToast('info', 'Printing invoice...')}
+              onClick={() => {
+                setPrintSale(detail);
+                setViewSale(null);
+              }}
             >
               Print Invoice
             </Button>
@@ -322,6 +327,10 @@ export default function Sales() {
           </div>
         )}
       </Modal>
+
+      {printSale && (
+        <ReceiptDocument sale={printSale} onClose={() => setPrintSale(null)} />
+      )}
     </div>
   );
 }
