@@ -489,41 +489,25 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Bottom Navigation (< 900px) */}
       <nav className="bnav" aria-label="Mobile Navigation">
-        <button
-          className={cn('bnav-item', isCurrentPath('/dashboard') && 'active')}
-          onClick={() => navigate('/dashboard')}
-        >
-          <Icon name="grid" size={20} />
-          <span>Dashboard</span>
-        </button>
-        <button
-          className={cn('bnav-item', isCurrentPath('/pos') && 'active')}
-          onClick={() => navigate('/pos')}
-        >
-          <Icon name="cart" size={20} />
-          <span>POS</span>
-        </button>
-        <button
-          className={cn('bnav-item', isCurrentPath('/products') && 'active')}
-          onClick={() => navigate('/products')}
-        >
-          <Icon name="box" size={20} />
-          <span>Products</span>
-        </button>
-        <button
-          className={cn('bnav-item', isCurrentPath('/sales') && 'active')}
-          onClick={() => navigate('/sales')}
-        >
-          <Icon name="receipt" size={20} />
-          <span>Sales</span>
-        </button>
-        <button
-          className={cn('bnav-item', moreSheetOpen && 'active')}
-          onClick={() => setMoreSheetOpen(true)}
-        >
-          <Icon name="dots" size={20} />
-          <span>More</span>
-        </button>
+        {accessibleNav.slice(0, 4).map(item => (
+          <button
+            key={item.path}
+            className={cn('bnav-item', isCurrentPath(item.path) && 'active')}
+            onClick={() => navigate(item.path)}
+          >
+            <Icon name={item.icon} size={20} />
+            <span>{item.label}</span>
+          </button>
+        ))}
+        {accessibleNav.length > 4 && (
+          <button
+            className={cn('bnav-item', moreSheetOpen && 'active')}
+            onClick={() => setMoreSheetOpen(true)}
+          >
+            <Icon name="dots" size={20} />
+            <span>More</span>
+          </button>
+        )}
       </nav>
 
       {/* Mobile "More" Bottom Sheet */}
@@ -538,43 +522,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
 
-            <div className="more-section">Operations</div>
-            <div className="more-grid">
-              {accessibleNav
-                .filter(n => ['inventory', 'purchases', 'customers', 'suppliers', 'reports'].includes(n.module))
-                .map(n => (
-                  <button
-                    key={n.path}
-                    className="more-item"
-                    onClick={() => {
-                      navigate(n.path);
-                      setMoreSheetOpen(false);
-                    }}
-                  >
-                    <Icon name={n.icon} size={18} className="text-accent" />
-                    <span>{n.label}</span>
-                  </button>
-                ))}
-            </div>
+            {accessibleNav.slice(4).filter(n => n.group === 'MAIN').length > 0 && (
+              <>
+                <div className="more-section">Operations</div>
+                <div className="more-grid">
+                  {accessibleNav.slice(4).filter(n => n.group === 'MAIN').map(n => (
+                    <button
+                      key={n.path}
+                      className="more-item"
+                      onClick={() => {
+                        navigate(n.path);
+                        setMoreSheetOpen(false);
+                      }}
+                    >
+                      <Icon name={n.icon} size={18} className="text-accent" />
+                      <span>{n.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
-            <div className="more-section">Administration</div>
-            <div className="more-grid">
-              {accessibleNav
-                .filter(n => ['users', 'roles', 'settings'].includes(n.module))
-                .map(n => (
-                  <button
-                    key={n.path}
-                    className="more-item"
-                    onClick={() => {
-                      navigate(n.path);
-                      setMoreSheetOpen(false);
-                    }}
-                  >
-                    <Icon name={n.icon} size={18} className="text-accent" />
-                    <span>{n.label}</span>
-                  </button>
-                ))}
-            </div>
+            {accessibleNav.slice(4).filter(n => n.group === 'ADMIN').length > 0 && (
+              <>
+                <div className="more-section">Administration</div>
+                <div className="more-grid">
+                  {accessibleNav.slice(4).filter(n => n.group === 'ADMIN').map(n => (
+                    <button
+                      key={n.path}
+                      className="more-item"
+                      onClick={() => {
+                        navigate(n.path);
+                        setMoreSheetOpen(false);
+                      }}
+                    >
+                      <Icon name={n.icon} size={18} className="text-accent" />
+                      <span>{n.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="divider my-3" />
             <div className="flex items-center justify-between pt-1">
