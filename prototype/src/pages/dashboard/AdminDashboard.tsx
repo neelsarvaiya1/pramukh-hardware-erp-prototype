@@ -209,7 +209,7 @@ export default function AdminDashboard() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--muted)' }} tickLine={false} axisLine={false} interval={range === '30' ? 4 : 0} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--muted)' }} tickLine={false} axisLine={false} width={52} tickFormatter={(v) => formatCurrency(v, sym)} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--muted)' }} tickLine={false} axisLine={false} width={75} tickFormatter={(v) => formatCurrency(v, sym)} />
                 <Tooltip formatter={(v: number) => [formatCurrency(v, sym), 'Revenue']} contentStyle={tooltipStyle} />
                 <Area type="monotone" dataKey="value" stroke="var(--accent)" strokeWidth={2.2} fill="url(#g1)" />
               </AreaChart>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { hasPermission, formatCurrency } from '../../utils/permissions';
-import { Icon, Dropdown, DropdownItem } from '../ui';
+import { Icon, Dropdown, DropdownItem, Button } from '../ui';
 import { cn } from '../../utils/cn';
 
 interface NavItem {
