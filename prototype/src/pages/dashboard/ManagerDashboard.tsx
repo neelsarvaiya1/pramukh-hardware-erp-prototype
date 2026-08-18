@@ -199,7 +199,7 @@ export default function ManagerDashboard() {
                   <th>Customer</th>
                   <th className="hidden sm:table-cell">Date</th>
                   <th className="num">Amount</th>
-                  <th>Payment</th>
+                  <th className="hidden sm:table-cell">Payment</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -212,7 +212,7 @@ export default function ManagerDashboard() {
                       <td>{c ? c.name : 'Walk-in Customer'}</td>
                       <td className="hidden sm:table-cell mut">{formatDate(s.date)}</td>
                       <td className="num font-bold">{formatCurrency(s.total, sym)}</td>
-                      <td className="mut">{s.paymentMethod}</td>
+                      <td className="mut hidden sm:table-cell">{s.paymentMethod}</td>
                       <td>
                         <Badge variant={s.status === 'completed' ? 'success' : s.status === 'pending' ? 'warning' : 'danger'}>
                           {s.status}
