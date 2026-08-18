@@ -997,6 +997,7 @@ select.input {
   padding: 11px 14px;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .tbl tbody tr:last-child td {
